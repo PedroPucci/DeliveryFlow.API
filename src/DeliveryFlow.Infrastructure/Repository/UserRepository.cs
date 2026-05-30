@@ -2,6 +2,7 @@
 using DeliveryFlow.Domain.Entities;
 using DeliveryFlow.Infrastructure.Connections;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryFlow.Infrastructure.Repository
 {
@@ -18,39 +19,69 @@ namespace DeliveryFlow.Infrastructure.Repository
             _userManager = userManager;
         }
 
-        public Task<UserEntity> Add(UserEntity userEntity)
+        public async Task<UserEntity> Add(UserEntity userEntity)
         {
-            throw new NotImplementedException();
+            var result = await _userManager.CreateAsync(userEntity, userEntity.PasswordHash);
+
+            if (!result.Succeeded)
+                throw new InvalidOperationException(
+                    string.Join(" | ", result.Errors.Select(e => e.Description)));
+
+            return userEntity;
         }
 
-        public Task<bool> CheckPassword(UserEntity userEntity, string password)
+        public async Task<bool> CheckPassword(UserEntity userEntity, string password)
         {
-            throw new NotImplementedException();
+            var result = await _userManager.CheckPasswordAsync(userEntity, password);
+            return result;
         }
 
-        public Task<bool> Delete(string id)
+
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var user = await GetByIdCheck(id);
+
+            if (user == null)
+                return false;
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
-        public Task<List<UserEntity>> Get()
+        public async Task<List<UserEntity>> Get()
         {
-            throw new NotImplementedException();
+            return await (
+                from user in _context.Users.AsNoTracking()
+                join userRole in _context.UserRoles.AsNoTracking()
+                    on user.Id equals userRole.UserId
+                join role in _context.Roles.AsNoTracking()
+                    on userRole.RoleId equals role.Id
+                orderby user.Id
+                select new UserEntity
+                {
+                    Email = user.Email,
+                    Name = user.Name,
+                    IsActive = user.IsActive
+                }
+            ).ToListAsync();
         }
 
-        public Task<UserEntity> GetByEmail(string email)
+        public async Task<UserEntity> GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            var result = await _userManager.FindByEmailAsync(email);
+            return result;
         }
 
-        public Task<UserEntity?> GetByIdCheck(string id)
+        public async Task<UserEntity?> GetByIdCheck(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FindAsync(id);
         }
 
         public UserEntity Update(UserEntity userEntity)
         {
-            throw new NotImplementedException();
+            return _context.Users.Update(userEntity).Entity;
         }
     }
 }
