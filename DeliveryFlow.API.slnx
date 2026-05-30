@@ -1,3 +1,15 @@
 <Solution>
-  <Project Path="DeliveryFlow.API/DeliveryFlow.API.csproj" />
+  <Folder Name="/docs/">
+    <File Path="docs/Teste Prático-Desenvolvedor-PedroIghorHolandaPucci.pdf" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DeliveryFlow.API/DeliveryFlow.API.csproj" />
+    <Project Path="src/DeliveryFlow.Application/DeliveryFlow.Application.csproj" />
+    <Project Path="src/DeliveryFlow.Domain/DeliveryFlow.Domain.csproj" />
+    <Project Path="src/DeliveryFlow.Infrastructure/DeliveryFlow.Infrastructure.csproj" />
+    <Project Path="src/DeliveryFlow.Shared/DeliveryFlow.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DeliveryFlow.UnitTests/DeliveryFlow.UnitTests.csproj" />
+  </Folder>
 </Solution>

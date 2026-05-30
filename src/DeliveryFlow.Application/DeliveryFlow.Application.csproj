@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstractions\" />
+    <Folder Include="Contracts\DomainErrors\" />
+    <Folder Include="Contracts\Dto\" />
+    <Folder Include="Validators\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeliveryFlow.Domain\DeliveryFlow.Domain.csproj" />
+    <ProjectReference Include="..\DeliveryFlow.Shared\DeliveryFlow.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

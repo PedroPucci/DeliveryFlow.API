@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+    <Folder Include="Connections\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Repository\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeliveryFlow.Application\DeliveryFlow.Application.csproj" />
+    <ProjectReference Include="..\DeliveryFlow.Domain\DeliveryFlow.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
