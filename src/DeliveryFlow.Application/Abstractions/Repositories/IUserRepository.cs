@@ -1,0 +1,15 @@
+﻿using DeliveryFlow.Domain.Entities;
+
+namespace DeliveryFlow.Application.Abstractions.Repositories
+{
+    public interface IUserRepository
+    {
+        Task<UserEntity> Add(UserEntity userEntity);
+        UserEntity Update(UserEntity userEntity);
+        Task<bool> Delete(string id);
+        Task<List<UserEntity>> Get();
+        Task<UserEntity?> GetByIdCheck(string id);
+        Task<bool> CheckPassword(UserEntity userEntity, string password);
+        Task<UserEntity> GetByEmail(string email);
+    }
+}
