@@ -79,5 +79,5 @@ Foi implementado um middleware global chamado ExceptionMiddleware para centraliz
   - Arquivos gerados diariamente
 ---
 ### **Finalização**
-- Após seguir todas as etapas anteriores, a aplicação estará disponível juntamente com a interface **Swagger** para testes e exploração dos endpoints da API..
+- Após seguir todas as etapas anteriores, a aplicação estará disponível juntamente com a interface **Swagger** para testes e exploração dos endpoints da API.
 ---
