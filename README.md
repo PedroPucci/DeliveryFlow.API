@@ -15,6 +15,7 @@ API REST desenvolvida com .NET 8, utilizando Entity Framework Core e os padrões
 
 ## Documentação
 - [Desafio Técnico](docs/TestePrático-Desenvolvedor-PedroIghorHolandaPucci.pdf)
+- [Documentação Arquitetural](docs/Documentacao-Arquitetural.pdf)
 
 ## Estrutura do Projeto
 
