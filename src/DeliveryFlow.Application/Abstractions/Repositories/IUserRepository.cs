@@ -10,6 +10,6 @@ namespace DeliveryFlow.Application.Abstractions.Repositories
         Task<List<UserEntity>> Get();
         Task<UserEntity?> GetByIdCheck(string id);
         Task<bool> CheckPassword(UserEntity userEntity, string password);
-        Task<UserEntity> GetByEmail(string email);
+        Task<UserEntity> GetByUserName(string userName);
     }
 }

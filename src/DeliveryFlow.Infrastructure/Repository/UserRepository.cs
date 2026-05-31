@@ -68,9 +68,9 @@ namespace DeliveryFlow.Infrastructure.Repository
             ).ToListAsync();
         }
 
-        public async Task<UserEntity> GetByEmail(string email)
+        public async Task<UserEntity> GetByUserName(string userName)
         {
-            var result = await _userManager.FindByEmailAsync(email);
+            var result = await _userManager.FindByEmailAsync(userName);
             return result;
         }
 

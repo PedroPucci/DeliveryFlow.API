@@ -28,13 +28,13 @@ namespace DeliveryFlow.Application.Services
 
         public async Task<Result<string>> Login(UserForAuthenticationDTO userEntity)
         {
-            if (string.IsNullOrWhiteSpace(userEntity.Email) || string.IsNullOrWhiteSpace(userEntity.Password))
+            if (string.IsNullOrWhiteSpace(userEntity.UserName) || string.IsNullOrWhiteSpace(userEntity.Password))
             {
                 Log.Warning(LogMessages.InvalidLoginInputs());
                 return Result<string>.Error("Email and password are required.");
             }
 
-            var response = await _repositoryUoW.UserRepository.GetByEmail(userEntity.Email);
+            var response = await _repositoryUoW.UserRepository.GetByUserName(userEntity.UserName);
 
             if (response is null)
             {

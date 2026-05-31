@@ -54,6 +54,21 @@ namespace DeliveryFlow.API.Extensions
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = issuer,
+            //        ValidAudience = audience,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
+            //        ClockSkew = TimeSpan.FromMinutes(5),
+            //        RoleClaimType = ClaimTypes.Role
+            //    };
+            //});
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -68,6 +83,39 @@ namespace DeliveryFlow.API.Extensions
                     ClockSkew = TimeSpan.FromMinutes(5),
                     RoleClaimType = ClaimTypes.Role
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            status = 401,
+                            message = "You need to be authenticated to access this resource."
+                        });
+
+                        await context.Response.WriteAsync(result);
+                    },
+
+                    OnForbidden = async context =>
+                    {
+                        context.Response.StatusCode = 403;
+                        context.Response.ContentType = "application/json";
+
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            status = 403,
+                            message = "You do not have permission to perform this action."
+                        });
+
+                        await context.Response.WriteAsync(result);
+                    }
+                };
             });
 
             services.AddAuthorization();
@@ -81,7 +129,7 @@ namespace DeliveryFlow.API.Extensions
                 {
                     Version = "v1",
                     Title = "API - TechsysLog",
-                    Description = "Sistema de controle de pedidos e entregas com autenticação JWT, consulta de CEP, Swagger, Health Checks e notificações em tempo real."
+                    Description = "Sistema de controle de pedidos e entregas com autenticação JWT, consulta de CEP, Swagger e notificações em tempo real."
                 });
 
                 opt.OperationFilter<CustomOperationDescriptions>();
