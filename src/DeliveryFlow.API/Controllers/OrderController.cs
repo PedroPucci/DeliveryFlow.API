@@ -6,6 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryFlow.API.Controllers
 {
+    /// <summary>
+    /// Decisão:
+    /// As rotas de pedidos são protegidas com autenticação JWT,
+    /// permitindo que apenas usuários autenticados possam
+    /// criar, atualizar, excluir ou visualizar pedidos.
+    /// </summary>
+
     [Authorize]
     [ApiController]
     [Route("api/orders")]

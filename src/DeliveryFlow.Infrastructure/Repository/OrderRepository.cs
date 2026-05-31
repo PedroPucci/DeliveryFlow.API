@@ -39,6 +39,7 @@ namespace DeliveryFlow.Infrastructure.Repository
         {
             return await _context.Orders
                 .AsNoTracking()
+                .Include(x => x.DeliveryAddress)
                 .OrderBy(x => x.OrderNumber)
                 .ToListAsync();
         }
@@ -46,9 +47,10 @@ namespace DeliveryFlow.Infrastructure.Repository
         public async Task<OrderEntity?> GetByIdCheck(string id)
         {
             return await _context.Orders
+                .AsNoTracking()
+                .Include(x => x.DeliveryAddress)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
-
 
         public async Task<OrderEntity?> GetByOrderNumber(int orderNumber)
         {

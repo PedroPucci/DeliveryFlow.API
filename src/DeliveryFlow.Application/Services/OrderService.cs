@@ -1,11 +1,14 @@
 ﻿using DeliveryFlow.Application.Abstractions.Persistence;
 using DeliveryFlow.Application.Abstractions.Services;
 using DeliveryFlow.Application.Contracts.Dto.OrderDto;
+using DeliveryFlow.Application.Contracts.Dto.UserDto;
+using DeliveryFlow.Application.Validators;
 using DeliveryFlow.Domain.Common;
 using DeliveryFlow.Domain.Entities;
 using DeliveryFlow.Shared.Logging;
 using Serilog;
 using System.Net.Http.Json;
+using System.Runtime.ConstrainedExecution;
 
 namespace DeliveryFlow.Application.Services
 {
@@ -36,6 +39,13 @@ namespace DeliveryFlow.Application.Services
                 {
                     Log.Information(LogMessages.OrderAlreadyExists(existingOrder.OrderNumber));
                     return Result<OrderEntity>.Error("An order with this number already exists.");
+                }
+
+                var isValid = await IsValidOrderRequest(createOrderRequestDto);
+                if (!isValid.Success)
+                {
+                    Log.Information(isValid.Message);
+                    return Result<OrderEntity>.Error(isValid.Message);
                 }
 
                 var address = await GetAddressByZipCode(createOrderRequestDto.ZipCode);
@@ -132,11 +142,7 @@ namespace DeliveryFlow.Application.Services
                 if (order is null)
                 {
                     transaction.Rollback();
-
-                    var message = LogMessages.CannotPerformActionOnOrder(
-                        "retrieve by order number",
-                        orderNumber.ToString());
-
+                    var message = LogMessages.CannotPerformActionOnOrder("retrieve by order number",orderNumber.ToString());
                     Log.Error(message);
 
                     return Result<OrderEntity>.Error(message);
@@ -244,6 +250,12 @@ namespace DeliveryFlow.Application.Services
             }
         }
 
+        /// <summary>
+        /// Decisão:
+        /// O endereço de entrega é obtido automaticamente através da API ViaCEP
+        /// utilizando o CEP informado pelo usuário.
+        /// Apenas o CEP e o número do endereço precisam ser enviados pelo frontend.
+        /// </summary>
         private async Task<ViaCepResponseDto?> GetAddressByZipCode(string zipCode)
         {
             try
@@ -303,6 +315,20 @@ namespace DeliveryFlow.Application.Services
                     State = address.State
                 }
             };
+        }
+
+        private async Task<Result<CreateOrderRequestDto>> IsValidOrderRequest(CreateOrderRequestDto createOrderRequestDto)
+        {
+            var requestValidator = await new OrderRequestValidator().ValidateAsync(createOrderRequestDto);
+
+            if (!requestValidator.IsValid)
+            {
+                string errorMessage = string.Join(" ", requestValidator.Errors.Select(e => e.ErrorMessage));
+                errorMessage = errorMessage.Replace(Environment.NewLine, "");
+                return Result<CreateOrderRequestDto>.Error(errorMessage);
+            }
+
+            return Result<CreateOrderRequestDto>.Ok();
         }
     }
 }
