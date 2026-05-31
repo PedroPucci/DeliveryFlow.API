@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryFlow.API.Controllers
 {
+    /// <summary>
+    /// Decisão:
+    /// As rotas de Get,GetById e Delete protegidas com autenticação JWT,
+    /// permitindo que apenas usuários autenticados.
+    /// </summary>
     [ApiController]
     [Route("api/users")]
     public class UserController : ControllerBase

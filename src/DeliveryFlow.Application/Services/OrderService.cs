@@ -1,14 +1,12 @@
 ﻿using DeliveryFlow.Application.Abstractions.Persistence;
 using DeliveryFlow.Application.Abstractions.Services;
 using DeliveryFlow.Application.Contracts.Dto.OrderDto;
-using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using DeliveryFlow.Application.Validators;
 using DeliveryFlow.Domain.Common;
 using DeliveryFlow.Domain.Entities;
 using DeliveryFlow.Shared.Logging;
 using Serilog;
 using System.Net.Http.Json;
-using System.Runtime.ConstrainedExecution;
 
 namespace DeliveryFlow.Application.Services
 {
