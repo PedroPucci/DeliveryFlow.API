@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/docs/">
+    <File Path="docs/Documentacao-Arquitetural.pdf" />
     <File Path="docs/TestePrático-Desenvolvedor-PedroIghorHolandaPucci.pdf" />
   </Folder>
   <Folder Name="/src/">
