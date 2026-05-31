@@ -1,4 +1,4 @@
-# DeliveryFlow.API
+# DeliveryFlow
 
 # **Descrição do projeto**
 O DeliveryFlow.API foi desenvolvido para atender às necessidades da empresa fictícia TechsysLog, especializada em logística e gerenciamento de entregas.
