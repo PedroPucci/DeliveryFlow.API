@@ -77,5 +77,54 @@ namespace DeliveryFlow.Shared.Logging
             "Password updated successfully.";
 
         #endregion
+
+        #region Order CRUD
+
+        public static string AddOrderError(Exception ex) =>
+            $"Error adding order. Details: {ex.Message}";
+
+        public static string AddOrderSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} - id: {orderEntity.Id} added successfully.";
+
+        public static string UpdateOrderError(Exception ex) =>
+            $"Error updating order. Details: {ex.Message}";
+
+        public static string UpdateOrderSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} - id: {orderEntity.Id} updated successfully.";
+
+        public static string DeleteOrderError(Exception ex) =>
+            $"Error deleting order. Details: {ex.Message}";
+
+        public static string DeleteOrderSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} - id: {orderEntity.Id} deleted successfully.";
+
+        public static string GetAllOrdersError(Exception ex) =>
+            $"Error retrieving orders list. Details: {ex.Message}";
+
+        public static string GetAllOrdersSuccess() =>
+            "Orders retrieved successfully.";
+
+        public static string GetOrderByIdError(Exception ex) =>
+            $"Error retrieving order by id. Details: {ex.Message}";
+
+        public static string GetOrderByIdSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} - id: {orderEntity.Id} retrieved successfully.";
+
+        public static string GetOrderByNumberError(Exception ex) =>
+            $"Error retrieving order by number. Details: {ex.Message}";
+
+        public static string GetOrderByNumberSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} retrieved successfully.";
+
+        public static string RegisterDeliveryError(Exception ex) =>
+            $"Error registering order delivery. Details: {ex.Message}";
+
+        public static string RegisterDeliverySuccess(OrderEntity orderEntity) =>
+            $"Delivery registered successfully for order number: {orderEntity.OrderNumber} - id: {orderEntity.Id}.";
+
+        public static string OrderAlreadyExists(int orderNumber) =>
+            $"Order number: {orderNumber} already exists.";
+
+        #endregion
     }
 }

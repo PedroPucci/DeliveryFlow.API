@@ -1,5 +1,5 @@
 ﻿using DeliveryFlow.Application.Contracts.DomainErrors;
-using DeliveryFlow.Application.Contracts.Dto;
+using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using DeliveryFlow.Shared.Helpers;
 using FluentValidation;
 

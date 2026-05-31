@@ -10,16 +10,20 @@ namespace DeliveryFlow.Application.Abstractions.Persistence
         private readonly UserManager<UserEntity> _userManager;
         private readonly RoleManager<ProfileEntity> _roleManager;
         private UserService userService;
+        private OrderService orderService;
         private AuthenticationService authenticationService;
+        private IHttpClientFactory _httpClientFactory;
 
         public UnitOfWorkService(
             IRepositoryUoW repositoryUoW,
             UserManager<UserEntity> userManager,
-            RoleManager<ProfileEntity> roleManager)
+            RoleManager<ProfileEntity> roleManager,
+            IHttpClientFactory httpClientFactory)
         {
             _repositoryUoW = repositoryUoW;
             _userManager = userManager;
             _roleManager = roleManager;
+            _httpClientFactory = httpClientFactory;
         }
 
         public UserService UserService
@@ -32,6 +36,18 @@ namespace DeliveryFlow.Application.Abstractions.Persistence
                         _userManager,
                         _roleManager);
                 return userService;
+            }
+        }
+
+        public OrderService OrderService
+        {
+            get
+            {
+                if (orderService is null)
+                    orderService = new OrderService(
+                        _repositoryUoW,
+                        _httpClientFactory);
+                return orderService;
             }
         }
 

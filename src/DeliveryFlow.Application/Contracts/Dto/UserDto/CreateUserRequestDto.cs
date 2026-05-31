@@ -1,4 +1,4 @@
-﻿namespace DeliveryFlow.Application.Contracts.Dto
+﻿namespace DeliveryFlow.Application.Contracts.Dto.UserDto
 {
     public class CreateUserRequestDto
     {

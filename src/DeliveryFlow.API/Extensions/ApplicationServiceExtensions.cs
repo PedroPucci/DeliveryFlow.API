@@ -1,11 +1,12 @@
 ﻿using DeliveryFlow.API.Extensions.SwaggerDocumentation;
 using DeliveryFlow.Application.Abstractions.Persistence;
 using DeliveryFlow.Application.Abstractions.Repositories;
+using DeliveryFlow.Application.Abstractions.Services;
+using DeliveryFlow.Application.Services;
 using DeliveryFlow.Domain.Entities;
 using DeliveryFlow.Infrastructure.Connections;
 using DeliveryFlow.Infrastructure.Repository;
 using DeliveryFlow.Shared.Identity;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace DeliveryFlow.API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddEndpointsApiExplorer();
+            services.AddHttpClient();
 
             var jwtSettings = config.GetSection("JwtSettings");
             var issuer = jwtSettings["Issuer"];
@@ -60,38 +62,11 @@ namespace DeliveryFlow.API.Extensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-
                     ValidIssuer = issuer,
                     ValidAudience = audience,
-
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(secretKey!)),
-
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
                     ClockSkew = TimeSpan.FromMinutes(5),
                     RoleClaimType = ClaimTypes.Role
-                };
-
-                options.Events = new JwtBearerEvents
-                {
-                    OnChallenge = context =>
-                    {
-                        context.HandleResponse();
-
-                        context.Response.StatusCode = 401;
-                        context.Response.ContentType = "application/json";
-
-                        return context.Response.WriteAsync(
-                            "{\"success\": false, \"message\": \"Invalid or expired token. Please log in again.\"}");
-                    },
-
-                    OnForbidden = context =>
-                    {
-                        context.Response.StatusCode = 403;
-                        context.Response.ContentType = "application/json";
-
-                        return context.Response.WriteAsync(
-                            "{\"success\": false, \"message\": \"You do not have permission to access this resource.\"}");
-                    }
                 };
             });
 
@@ -99,9 +74,6 @@ namespace DeliveryFlow.API.Extensions
 
             services.AddSwaggerGen(opt =>
             {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
                 opt.CustomSchemaIds(t => t.FullName);
                 opt.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 
@@ -109,25 +81,7 @@ namespace DeliveryFlow.API.Extensions
                 {
                     Version = "v1",
                     Title = "API - TechsysLog",
-                    Description = @"
-                        Sistema de controle de pedidos e entregas desenvolvido em ASP.NET Core para a empresa TechsysLog.
-
-                        A aplicação permite cadastro de usuários, gerenciamento de pedidos, registro de entregas 
-                        e atualização de status em tempo real utilizando SignalR, seguindo boas práticas de 
-                        arquitetura, organização e segurança.
-
-                        Principais Recursos:
-                        - Cadastro e autenticação de usuários com JWT.
-                        - Gerenciamento de pedidos e entregas.
-                        - Consulta de endereço por CEP utilizando API externa.
-                        - Notificações em tempo real com SignalR.
-                        - Logs estruturados com Serilog.
-                        - Documentação automatizada com Swagger.
-                        - Health Checks para monitoramento da aplicação.
-                        - Arquitetura modular e organizada em camadas.
-
-                        A solução foi construída com foco em escalabilidade, manutenibilidade e boas práticas de desenvolvimento backend.
-                    "
+                    Description = "Sistema de controle de pedidos e entregas com autenticação JWT, consulta de CEP, Swagger, Health Checks e notificações em tempo real."
                 });
 
                 opt.OperationFilter<CustomOperationDescriptions>();
@@ -156,27 +110,26 @@ namespace DeliveryFlow.API.Extensions
                         Array.Empty<string>()
                     }
                 });
-
-                if (File.Exists(xmlPath))
-                {
-                    opt.IncludeXmlComments(xmlPath);
-                }
             });
 
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .WithOrigins("http://localhost:4200");
+                    policy.AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .WithOrigins("http://localhost:4200");
                 });
             });
 
             services.AddScoped<IRepositoryUoW, RepositoryUoW>();
             services.AddScoped<IUnitOfWorkService, UnitOfWorkService>();
+
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
+            services.AddScoped<IOrderService, OrderService>();
+
             services.AddScoped<AuthenticationService>();
 
             services.AddMvc().AddJsonOptions(options =>

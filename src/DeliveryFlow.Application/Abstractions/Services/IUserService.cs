@@ -1,4 +1,4 @@
-﻿using DeliveryFlow.Application.Contracts.Dto;
+﻿using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using DeliveryFlow.Domain.Common;
 using DeliveryFlow.Domain.Entities;
 

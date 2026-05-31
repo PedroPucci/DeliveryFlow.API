@@ -1,9 +1,10 @@
-﻿namespace DeliveryFlow.Application.Contracts.Dto
+﻿namespace DeliveryFlow.Application.Contracts.Dto.UserDto
 {
-    public class UpdateUserRequestDto
+    public class UserResponseDto
     {
         public string? Name { get; set; }
         public string? Email { get; set; }
+        public string? Password { get; set; }
         public bool IsActive { get; set; }
     }
 }

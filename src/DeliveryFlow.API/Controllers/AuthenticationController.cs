@@ -1,5 +1,5 @@
 ﻿using DeliveryFlow.Application.Abstractions.Persistence;
-using DeliveryFlow.Application.Contracts.Dto;
+using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

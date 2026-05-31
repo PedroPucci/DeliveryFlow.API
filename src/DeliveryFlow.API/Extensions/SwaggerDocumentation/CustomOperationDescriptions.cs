@@ -15,6 +15,7 @@ namespace DeliveryFlow.API.Extensions.SwaggerDocumentation
             var routeHandlers = new Dictionary<string, Action>(StringComparer.OrdinalIgnoreCase)
             {
                 { "users",               () => HandleUsersOperations(operation, context) },
+                { "orders",               () => HandleOrdersOperations(operation, context) },
                 { "auth",               () => HandleAuthOperations(operation, context) }
 
             };
@@ -69,7 +70,55 @@ namespace DeliveryFlow.API.Extensions.SwaggerDocumentation
                     AddResponses(operation, "200", "All users retrieved successfully.");
                 }
             }
-        }        
+        }
+
+        private void HandleOrdersOperations(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var method = context.ApiDescription.HttpMethod;
+            var path = context.ApiDescription.RelativePath?.ToLower() ?? string.Empty;
+
+            if (method == "POST")
+            {
+                operation.Summary = "Create a new Order.";
+                operation.Description = "This endpoint allows you to create a new order by providing the necessary details.";
+                AddResponses(operation, "200", "The order was successfully created.");
+            }
+            else if (method == "PUT")
+            {
+                operation.Summary = "Update an existing Order.";
+                operation.Description = "This endpoint allows you to update an existing order by providing the necessary details.";
+                AddResponses(operation, "200", "The order was successfully updated.");
+            }
+            else if (method == "DELETE")
+            {
+                operation.Summary = "Delete an existing Order.";
+                operation.Description = "This endpoint allows you to delete an existing order by providing the ID.";
+                AddResponses(operation, "200", "The order was successfully deleted.");
+                AddResponses(operation, "404", "Order not found. Please verify the ID.");
+            }
+            else if (method == "GET")
+            {
+                if (path.Contains("{id}"))
+                {
+                    operation.Summary = "Retrieve order by id.";
+                    operation.Description = "This endpoint is responsible for retrieving an order by id.";
+                    AddResponses(operation, "200", "Order retrieved successfully.");
+                }
+                else if (path.Contains("all"))
+                {
+                    operation.Summary = "Retrieve all orders.";
+                    operation.Description = "This endpoint is responsible for retrieving all orders.";
+                    AddResponses(operation, "200", "All orders retrieved successfully.");
+                }
+            }
+            else if (method == "PATCH" && path.Contains("delivery"))
+            {
+                operation.Summary = "Register order delivery.";
+                operation.Description = "This endpoint allows you to register the delivery date and time of an order.";
+                AddResponses(operation, "204", "Delivery registered successfully.");
+                AddResponses(operation, "404", "Order not found.");
+            }
+        }
 
         private void HandleAuthOperations(OpenApiOperation operation, OperationFilterContext context)
         {

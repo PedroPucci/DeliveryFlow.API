@@ -1,5 +1,5 @@
 ﻿using DeliveryFlow.Application.Abstractions.Persistence;
-using DeliveryFlow.Application.Contracts.Dto;
+using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using DeliveryFlow.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +42,7 @@ namespace DeliveryFlow.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete([FromRoute] string id)
@@ -54,6 +55,7 @@ namespace DeliveryFlow.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpGet("all")]
         [ProducesResponseType(typeof(List<UserEntity>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,6 +65,7 @@ namespace DeliveryFlow.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserEntity), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

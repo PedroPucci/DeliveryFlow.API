@@ -14,6 +14,7 @@ namespace DeliveryFlow.Infrastructure.Repository
         private readonly UserManager<UserEntity> _userManager;
         private bool _disposed = false;
         private IUserRepository? _userEntityRepository = null;
+        private IOrderRepository? _orderRepository = null;
 
         public RepositoryUoW(DataContext context, UserManager<UserEntity> userManager)
         {
@@ -30,6 +31,18 @@ namespace DeliveryFlow.Infrastructure.Repository
                     _userEntityRepository = new UserRepository(_context, _userManager);
                 }
                 return _userEntityRepository;
+            }
+        }
+
+        public IOrderRepository OrderRepository
+        {
+            get
+            {
+                if (_orderRepository is null)
+                {
+                    _orderRepository = new OrderRepository(_context);
+                }
+                return _orderRepository;
             }
         }
 

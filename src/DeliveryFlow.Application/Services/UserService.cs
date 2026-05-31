@@ -1,6 +1,6 @@
 ﻿using DeliveryFlow.Application.Abstractions.Persistence;
 using DeliveryFlow.Application.Abstractions.Services;
-using DeliveryFlow.Application.Contracts.Dto;
+using DeliveryFlow.Application.Contracts.Dto.UserDto;
 using DeliveryFlow.Application.Validators;
 using DeliveryFlow.Domain.Common;
 using DeliveryFlow.Domain.Entities;
@@ -61,7 +61,7 @@ namespace DeliveryFlow.Application.Services
                 if (!roleExists)
                 {
                     Log.Information("Invalid role.");
-                    return Result<UserEntity>.Error("Invalid role. Use only: Administrator or Usuario.");
+                    return Result<UserEntity>.Error("You do not have permission to perform this action.");
                 }
 
                 var createResult = await _userManager.CreateAsync(userEntity, createUserRequestDto.Password!);

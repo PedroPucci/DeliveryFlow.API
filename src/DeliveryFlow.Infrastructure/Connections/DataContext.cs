@@ -12,6 +12,8 @@ namespace DeliveryFlow.Infrastructure.Connections
         }
 
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<OrderEntity> Orders { get; set; }
+        public DbSet<DeliveryAddressEntity> DeliveryAddresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

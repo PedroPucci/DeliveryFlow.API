@@ -15,6 +15,8 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<DataContext>("sqlserver");
 
