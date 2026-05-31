@@ -10,7 +10,7 @@ namespace DeliveryFlow.Application.Abstractions.Repositories
 
         Task<bool> Delete(string id);
 
-        Task<List<OrderEntity>> Get(int page, int size);
+        Task<List<OrderEntity>> Get();
 
         Task<OrderEntity?> GetByIdCheck(string id);
 

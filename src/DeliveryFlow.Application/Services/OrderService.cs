@@ -45,6 +45,8 @@ namespace DeliveryFlow.Application.Services
 
                 var orderEntity = CreateOrderEntity(createOrderRequestDto, address);
 
+                orderEntity.DeliveryAddress.OrderId = orderEntity.Id;
+
                 var result = await _repositoryUoW.OrderRepository.Add(orderEntity);
 
                 _repositoryUoW.Commit();
@@ -69,29 +71,177 @@ namespace DeliveryFlow.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<OrderEntity>> Get()
+        public async Task<List<OrderEntity>> Get()
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                List<OrderEntity> orderEntities = await _repositoryUoW.OrderRepository.Get();
+                _repositoryUoW.Commit();
+                Log.Information(LogMessages.GetAllOrdersSuccess());
+                return orderEntities;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.GetAllOrdersError(ex));
+                throw new InvalidOperationException("Error loading order list. See logs for details.", ex);
+            }
         }
 
-        public Task<Result<OrderEntity>> GetById(string id)
+        public async Task<Result<OrderEntity>> GetById(string id)
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                var order = await _repositoryUoW.OrderRepository.GetByIdCheck(id);
+
+                if (order is null)
+                {
+                    transaction.Rollback();
+                    var message = LogMessages.CannotPerformActionOnOrder("retrieve", id);
+                    Log.Error(message);
+
+                    return Result<OrderEntity>.Error(message);
+                }
+
+                _repositoryUoW.Commit();
+
+                Log.Information(LogMessages.GetOrderByIdSuccess(order));
+
+                return Result<OrderEntity>.Ok(order);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.GetOrderByIdError(ex));
+                throw new InvalidOperationException("Error retrieving the order. See inner exception for details.", ex);
+            }
         }
 
-        public Task<Result<OrderEntity>> GetByOrderNumber(int orderNumber)
+        public async Task<Result<OrderEntity>> GetByOrderNumber(int orderNumber)
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                var order = await _repositoryUoW.OrderRepository.GetByOrderNumber(orderNumber);
+
+                if (order is null)
+                {
+                    transaction.Rollback();
+
+                    var message = LogMessages.CannotPerformActionOnOrder(
+                        "retrieve by order number",
+                        orderNumber.ToString());
+
+                    Log.Error(message);
+
+                    return Result<OrderEntity>.Error(message);
+                }
+
+                _repositoryUoW.Commit();
+                Log.Information(LogMessages.GetOrderByOrderNumberSuccess(order));
+
+                return Result<OrderEntity>.Ok(order);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.GetOrderByOrderNumberError(ex));
+                throw new InvalidOperationException("Error retrieving the order by order number. See inner exception for details.", ex);
+            }
         }
 
-        public Task<Result<bool>> RegisterDelivery(string id, RegisterDeliveryRequestDto registerDeliveryRequestDto)
+        public async Task<Result<bool>> RegisterDelivery(string id, RegisterDeliveryRequestDto registerDeliveryRequestDto)
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                var order = await _repositoryUoW.OrderRepository.GetByIdCheck(id);
+
+                if (order is null)
+                {
+                    var message = LogMessages.CannotPerformActionOnOrder(
+                        "register delivery",
+                        id);
+
+                    Log.Error(message);
+                    return Result<bool>.Error(message);
+                }
+
+                order.DeliveryDate = registerDeliveryRequestDto.DeliveryDate;
+                order.ModificationDate = DateTime.UtcNow;
+
+                await _repositoryUoW.OrderRepository.RegisterDelivery(order);
+                await _repositoryUoW.SaveAsync();
+
+                await transaction.CommitAsync();
+
+                Log.Information(LogMessages.RegisterDeliverySuccess(order));
+
+                return Result<bool>.Ok(true);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.RegisterDeliveryError(ex));
+                throw new InvalidOperationException("Failed to register order delivery. See logs for details.", ex);
+            }
         }
 
-        public Task<Result<bool>> Update(string id, UpdateOrderRequestDto updateOrderRequestDto)
+        public async Task<Result<bool>> Update(string id, UpdateOrderRequestDto updateOrderRequestDto)
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                var order = await _repositoryUoW.OrderRepository.GetByIdCheck(id);
+
+                if (order is null)
+                {
+                    var message = LogMessages.CannotPerformActionOnOrder("update", id);
+
+                    Log.Error(message);
+
+                    return Result<bool>.Error(message);
+                }
+
+                var address = await GetAddressByZipCode(updateOrderRequestDto.ZipCode);
+
+                if (address is null)
+                    return Result<bool>.Error("Invalid zip code.");
+
+                order.Description = updateOrderRequestDto.Description;
+                order.Value = updateOrderRequestDto.Value;
+                order.ModificationDate = DateTime.UtcNow;
+
+                order.DeliveryAddress.ZipCode = address.ZipCode!;
+                order.DeliveryAddress.Street = address.Street!;
+                order.DeliveryAddress.Number = updateOrderRequestDto.Number;
+                order.DeliveryAddress.District = address.District!;
+                order.DeliveryAddress.City = address.City!;
+                order.DeliveryAddress.State = address.State!;
+
+                _repositoryUoW.OrderRepository.Update(order);
+
+                await _repositoryUoW.SaveAsync();
+
+                await transaction.CommitAsync();
+
+                Log.Information(LogMessages.UpdateOrderSuccess(order));
+
+                return Result<bool>.Ok(true);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.UpdateOrderError(ex));
+                throw new InvalidOperationException($"Failed to update order with id. See logs for details.", ex);
+            }
         }
 
         private async Task<ViaCepResponseDto?> GetAddressByZipCode(string zipCode)

@@ -35,13 +35,11 @@ namespace DeliveryFlow.Infrastructure.Repository
             return true;
         }
 
-        public async Task<List<OrderEntity>> Get(int page, int size)
+        public async Task<List<OrderEntity>> Get()
         {
             return await _context.Orders
                 .AsNoTracking()
                 .OrderBy(x => x.OrderNumber)
-                .Skip((page - 1) * size)
-                .Take(size)
                 .ToListAsync();
         }
 

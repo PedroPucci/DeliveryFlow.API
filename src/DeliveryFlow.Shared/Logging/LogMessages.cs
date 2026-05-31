@@ -125,6 +125,15 @@ namespace DeliveryFlow.Shared.Logging
         public static string OrderAlreadyExists(int orderNumber) =>
             $"Order number: {orderNumber} already exists.";
 
+        public static string CannotPerformActionOnOrder(string action, string orderId) =>
+            $"Cannot {action} order with id: {orderId}. Order was not found.";
+
+        public static string GetOrderByOrderNumberError(Exception ex) =>
+            $"Error retrieving order by order number. Details: {ex.Message}";
+
+        public static string GetOrderByOrderNumberSuccess(OrderEntity orderEntity) =>
+            $"Order number: {orderEntity.OrderNumber} - id: {orderEntity.Id} retrieved successfully.";
+
         #endregion
     }
 }

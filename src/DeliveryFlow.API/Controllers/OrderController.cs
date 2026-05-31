@@ -63,7 +63,7 @@ namespace DeliveryFlow.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get()
         {
-            var result = await _uow.UserService.Get();
+            var result = await _uow.OrderService.Get();
             return Ok(result);
         }
 
