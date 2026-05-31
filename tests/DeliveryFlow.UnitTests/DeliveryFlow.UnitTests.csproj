@@ -39,11 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Validators\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\DeliveryFlow.Application\DeliveryFlow.Application.csproj" />
     <ProjectReference Include="..\..\src\DeliveryFlow.Infrastructure\DeliveryFlow.Infrastructure.csproj" />
   </ItemGroup>
