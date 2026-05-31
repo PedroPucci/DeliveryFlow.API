@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/docs/">
-    <File Path="docs/Teste Prático-Desenvolvedor-PedroIghorHolandaPucci.pdf" />
+    <File Path="docs/TestePrático-Desenvolvedor-PedroIghorHolandaPucci.pdf" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/DeliveryFlow.API/DeliveryFlow.API.csproj" />
