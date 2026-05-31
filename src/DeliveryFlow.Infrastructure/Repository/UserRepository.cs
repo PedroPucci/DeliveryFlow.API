@@ -70,7 +70,7 @@ namespace DeliveryFlow.Infrastructure.Repository
 
         public async Task<UserEntity> GetByUserName(string userName)
         {
-            var result = await _userManager.FindByEmailAsync(userName);
+            var result = await _userManager.FindByNameAsync(userName);
             return result;
         }
 

@@ -202,6 +202,8 @@ namespace DeliveryFlow.Application.Services
                 }
 
                 user.Email = updateUserRequestDto.Email;
+                user.UserName = updateUserRequestDto.UserName;
+                user.NormalizedUserName = updateUserRequestDto.UserName;
                 user.Name = updateUserRequestDto.Name;
                 user.IsActive = updateUserRequestDto.IsActive;
                 user.ModificationDate = DateTime.UtcNow;

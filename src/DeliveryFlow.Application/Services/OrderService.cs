@@ -54,6 +54,7 @@ namespace DeliveryFlow.Application.Services
                 var orderEntity = CreateOrderEntity(createOrderRequestDto, address);
 
                 orderEntity.DeliveryAddress.OrderId = orderEntity.Id;
+                orderEntity.IsActive = true;
 
                 var result = await _repositoryUoW.OrderRepository.Add(orderEntity);
 
@@ -74,9 +75,42 @@ namespace DeliveryFlow.Application.Services
             }
         }
 
-        public Task<Result<bool>> Delete(string id)
+        public async Task<Result<bool>> Delete(string id)
         {
-            throw new NotImplementedException();
+            using var transaction = _repositoryUoW.BeginTransaction();
+
+            try
+            {
+                var order = await _repositoryUoW.OrderRepository.GetByIdCheck(id);
+
+                if (order is null)
+                {
+                    transaction.Rollback();
+
+                    var message = LogMessages.CannotPerformActionOnOrder("delete", id);
+                    Log.Error(message);
+
+                    return Result<bool>.Error(message);
+                }
+
+                order.IsActive = false;
+                order.ModificationDate = DateTime.UtcNow;
+
+                _repositoryUoW.OrderRepository.Update(order);
+
+                await _repositoryUoW.SaveAsync();
+                await transaction.CommitAsync();
+
+                Log.Information(LogMessages.DeleteOrderSuccess(order));
+
+                return Result<bool>.Ok();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Log.Error(LogMessages.DeleteOrderError(ex));
+                throw new InvalidOperationException($"Failed to delete order with id {id}. See logs for details.", ex);
+            }
         }
 
         public async Task<List<OrderEntity>> Get()

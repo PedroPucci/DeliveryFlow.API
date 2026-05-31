@@ -189,7 +189,8 @@ namespace DeliveryFlow.Infrastructure.Migrations
                     DeliveryAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ModificationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

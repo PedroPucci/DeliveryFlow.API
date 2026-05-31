@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260531003338_Primeira")]
+    [Migration("20260531161947_Primeira")]
     partial class Primeira
     {
         /// <inheritdoc />
@@ -81,6 +81,9 @@ namespace DeliveryFlow.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ModificationDate")
                         .HasColumnType("datetime2");

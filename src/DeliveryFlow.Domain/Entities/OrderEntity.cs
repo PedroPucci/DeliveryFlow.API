@@ -10,5 +10,6 @@
         public DateTime? DeliveryDate { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ModificationDate { get; set; }
+        public bool IsActive { get; set; }
     }
 }
