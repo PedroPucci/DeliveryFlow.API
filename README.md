@@ -7,7 +7,7 @@
 - API REST desenvolvida em .NET 8.0, utilizando Entity Framework Core e os padrões Unit of Work e Repository, com suporte a validações, tratamento de erros, logging e documentação via Swagger.
 
 ## Documentação
-- [Desafio Técnico](docs/Teste Prático-Desenvolvedor-PedroIghorHolandaPucci.pdf)
+- [Desafio Técnico](docs/TestePrático-Desenvolvedor-PedroIghorHolandaPucci.pdf)
 
 ## **Estrutura do Projeto**
 
